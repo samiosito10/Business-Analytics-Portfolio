@@ -12,6 +12,8 @@ This project analyzes a sales pipeline to identify **revenue leakage, conversion
 
 Using **SQL and PostgreSQL** for data exploration and analysis, and **Power BI and DAX** for interactive visualization, the project translates raw sales data into actionable business insights and management recommendations.
 
+The project involved integrating and analyzing four separate data sources, **combining approximately 1 TB of data** into a unified analytical framework.
+
 ## Key Insights
 
 * **€5M in revenue leakage** identified across the sales pipeline
