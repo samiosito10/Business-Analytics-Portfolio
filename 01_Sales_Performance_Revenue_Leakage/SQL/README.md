@@ -4,9 +4,74 @@
 
 This folder contains the SQL analysis performed on a CRM sales dataset using **PostgreSQL** and **DBeaver**.
 
-The objective of the analysis was to transform raw CRM data into **actionable business insights** by examining the commercial process from multiple perspectives: opportunity lifecycle, sales funnel, products, customer accounts, sectors, and sales agents.
+The project involved integrating and analyzing **four separate data sources**, combining approximately **1 TB of data** into a unified analytical framework.
 
-The analysis was designed to answer not only **what is happening**, but also **where performance gaps occur and where management should focus its resources**.
+The objective was to transform large-scale, fragmented CRM data into **actionable business insights** by examining the commercial process from multiple perspectives: opportunity lifecycle, sales funnel, products, customer accounts, sectors, and sales agents.
+
+The analysis was designed to answer not only **what is happening**, but also **where performance gaps occur, why they occur, and where management should focus its resources**.
+
+---
+
+## Data Architecture & Integration
+
+The analysis is based on four interconnected data sources:
+
+### 1. Sales Pipeline — Main Dataset
+
+The central dataset containing the sales opportunities and their commercial outcomes.
+
+Key information includes:
+
+* Opportunity ID
+* Sales Agent
+* Product
+* Account
+* Deal Stage
+* Engagement Date
+* Close Date
+* Close Value
+
+The `Sales Pipeline` dataset acts as the **main fact table** for the analysis.
+
+### 2. Products
+
+Contains information about the products included in the sales pipeline, including their commercial characteristics and sales price.
+
+The Product dataset was linked to the Sales Pipeline using the **Product** field.
+
+### 3. Accounts
+
+Contains customer/account information, including the **Sector** associated with each account.
+
+The Account dataset was linked to the Sales Pipeline using the **Account** field.
+
+This relationship enables analysis of sales performance by customer and sector.
+
+### 4. Sales Team
+
+Contains information about the sales representatives responsible for opportunities.
+
+The Sales Team dataset was linked to the Sales Pipeline using the **Sales Agent** field.
+
+This enables performance analysis at the individual sales-agent level.
+
+### Data Integration
+
+The four data sources were connected through shared business keys:
+
+```text
+                    ┌──────────────┐
+                    │   Products   │
+                    └──────┬───────┘
+                           │ Product
+                           │
+┌──────────────┐     ┌─────▼────────────┐     ┌──────────────┐
+│ Sales Team   │────►│  Sales Pipeline  │◄────│   Accounts   │
+└──────────────┘     │   MAIN DATASET   │     └──────────────┘
+   Sales Agent       └──────────────────┘          Account
+```
+
+This structure allowed the analysis to combine **transaction-level opportunity data with product, customer, sector, and sales-team attributes**.
 
 ---
 
@@ -21,33 +86,34 @@ The analysis was structured around the following key business questions:
 5. **Which customer sectors have the highest revenue leakage?**
 6. **Which accounts generate the greatest commercial value and opportunity potential?**
 7. **Which sales agents show the largest performance gaps?**
-8. **Where should management prioritize sales resources to accelerate revenue growth?**
+8. **Which Product × Sector combinations should be prioritized?**
+9. **Where should management prioritize sales resources to accelerate revenue growth?**
 
 ---
 
 ## Analytical Workflow
 
-The SQL analysis follows a structured progression from data exploration to management recommendations:
+The SQL analysis follows a structured progression from data integration to management recommendations:
 
 ```text
-CRM Data
-   ↓
-Data Exploration & Validation
-   ↓
+4 Data Sources
+      ↓
+Data Integration & Validation
+      ↓
 Opportunity Lifecycle
-   ↓
+      ↓
 Sales Funnel
-   ↓
+      ↓
 Product Performance
-   ↓
+      ↓
 Sector Performance
-   ↓
+      ↓
 Account Analysis
-   ↓
+      ↓
 Sales Agent Performance
-   ↓
+      ↓
 Product × Sector Analysis
-   ↓
+      ↓
 Management Recommendations
 ```
 
@@ -55,7 +121,7 @@ Management Recommendations
 
 # 01 — Data Exploration
 
-The first step was to explore and validate the CRM dataset before performing the business analysis.
+The first step was to explore and validate the structure of the four data sources before performing the business analysis.
 
 The analysis included:
 
@@ -69,6 +135,7 @@ The analysis included:
 * Data quality checks
 * Missing and inconsistent values
 * Date fields validation
+* Relationships between datasets
 
 The objective was to understand the structure and quality of the data and establish a reliable foundation for the following analyses.
 
@@ -287,14 +354,16 @@ The overall SQL analysis identified several important findings:
 * **MG Advanced × Medical, Retail, and Technology** represent priority Product × Sector combinations.
 * Account-level analysis helps identify customers with high commercial value or significant revenue leakage.
 * Sales-agent performance should be assessed using multiple dimensions rather than win rate alone.
-  
+
 ---
 
 # Tools
 
 * **PostgreSQL** — Database and SQL environment
 * **DBeaver** — SQL development and data exploration
-* **SQL** — Data analysis and business logic
+* **SQL** — Data integration, analysis, and business logic
 * **Power BI** — Visualization and management dashboard
 * **DAX** — Interactive KPIs and dynamic analysis
+
+---
 
